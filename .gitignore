@@ -1,4 +1,4 @@
 *~
-src
-work
-*.iso
+src/work
+src/*.iso
+src/source

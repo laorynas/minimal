@@ -20,5 +20,12 @@ mkdir ../work/kernel
 # Full path will be something like 'work/kernel/linux-3.16.1'
 tar -xvf $ARCHIVE_FILE -C ../work/kernel
 
-cd ..
+# Apply extra patch for newer syslinux
+cd ../work/kernel/
+cd $(ls -d *)
 
+for i in ../../../patches/kernel/*.patch; do
+  patch -p1 < $i
+done
+
+cd ../../../

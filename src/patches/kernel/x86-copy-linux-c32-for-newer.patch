@@ -1,0 +1,26 @@
+x86: Copy ldlinux.c32 for newer isolinux
+
+From: Masami Hiramatsu <masami.hiramatsu@gmail.com>
+
+Since SYSLINUX newer than 5.0.0 requires ldlinux.c32 for boot,
+copy not only isolinux.bin but also ldlinux.c32.
+
+Signed-off-by: Masami Hiramatsu <masami.hiramatsu@gmail.com>
+---
+ arch/x86/boot/Makefile |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/x86/boot/Makefile b/arch/x86/boot/Makefile
+index 3db07f3..58a5013 100644
+--- a/arch/x86/boot/Makefile
++++ b/arch/x86/boot/Makefile
+@@ -160,6 +160,9 @@ isoimage: $(obj)/bzImage
+ 	for i in lib lib64 share end ; do \
+ 		if [ -f /usr/$$i/syslinux/isolinux.bin ] ; then \
+ 			cp /usr/$$i/syslinux/isolinux.bin $(obj)/isoimage ; \
++			if [ -f /usr/$$i/syslinux/ldlinux.c32 ] ; then \
++				cp /usr/$$i/syslinux/ldlinux.c32 $(obj)/isoimage ; \
++			fi ; \
+ 			break ; \
+ 		fi ; \
+ 		if [ $$i = end ] ; then exit 1 ; fi ; \

@@ -7,8 +7,16 @@ rm -rf rootfs
 cd busybox
 cd $(ls -d *)
 
+# Install busybox as a rootfs
 cp -R _install ../../rootfs
-cd ../../rootfs
+
+# Install static python
+cd ../../python
+cp python* ../rootfs/usr/bin/python
+chmod +x ../rootfs/usr/bin/python
+
+# prepare rootfs
+cd ../rootfs
 
 rm -f linuxrc
 
@@ -43,7 +51,7 @@ cat > rc.dhcp << EOF
 #!/bin/sh
 
 ip addr add \$ip/\$mask dev \$interface
-if [ -n "$router"]; then
+if [ -n "\$router" ]; then
     ip route add default via \$router
 fi
 EOF

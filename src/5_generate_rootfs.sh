@@ -23,7 +23,7 @@ chmod 1777 tmp
 
 cd etc
 
-cat > bootscript.sh << EOF
+cat > rc << EOF
 #!/bin/sh
 
 dmesg -n 1
@@ -31,31 +31,32 @@ mount -t devtmpfs none /dev
 mount -t proc none /proc
 mount -t sysfs none /sys
 
-EOF
-
-chmod +x bootscript.sh
-
-cat > welcome.txt << EOF
-
-  #####################################
-  #                                   #
-  #  Welcome to "Minimal Linux Live"  #
-  #                                   #
-  #####################################
+ip link set lo up
+ip link set eth0 up
+udhcpc -b -i eth0 -s /etc/rc.dhcp
 
 EOF
+
+chmod +x rc
+
+cat > rc.dhcp << EOF
+#!/bin/sh
+
+ip addr add \$ip/\$mask dev \$interface
+if [ -n "$router"]; then
+    ip route add default via \$router
+fi
+EOF
+
+chmod +x rc.dhcp
 
 cat > inittab << EOF
-::sysinit:/etc/bootscript.sh
+::sysinit:/etc/rc
 ::restart:/sbin/init
 ::ctrlaltdel:/sbin/reboot
-::once:cat /etc/welcome.txt
 ::respawn:/bin/cttyhack /bin/sh
-tty2::once:cat /etc/welcome.txt
 tty2::respawn:/bin/sh
-tty3::once:cat /etc/welcome.txt
 tty3::respawn:/bin/sh
-tty4::once:cat /etc/welcome.txt
 tty4::respawn:/bin/sh
 
 EOF
